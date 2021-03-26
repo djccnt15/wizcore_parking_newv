@@ -1,15 +1,20 @@
+import os, sys
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 # declaring var
-driver_loca = ".\chromedriver.exe"
 url = "http://220.75.173.245/"
 wiz_id = "A101101"
 wiz_pw = "Wizcore!0"
 car_num = "87로6770"
 
 # loading chrome web driver
-driver = webdriver.Chrome(driver_loca)
+if getattr(sys, 'frozen', False):
+    chromedriver_path = os.path.join(sys._MEIPASS, "chromedriver.exe")
+    driver = webdriver.Chrome(chromedriver_path)
+else:
+    driver = webdriver.Chrome()
+
 driver.implicitly_wait(time_to_wait=5)
 
 # url loading
@@ -34,14 +39,5 @@ driver.find_element_by_id("DC_Active").click()
 driver.find_element_by_xpath('//*[@id="dc_items"]/label[2]/input').click()
 driver.find_element_by_id("DC_Active").click()
 
-# quit driver
-# driver.quit()
-
-# dummy code
-# table_search_result = driver.find_element_by_id("carsearch_table")
-# tbody = table_search_result.find_element_by_tag_name("tbody")
-# rows = tbody.find_elements_by_tag_name("tr")
-# table_search_result
-# for index, value in enumerate(rows):
-#     body = value.find_elements_by_tag_name("td")[0]
-#     print(body.text)
+# quit web driver
+driver.quit()
