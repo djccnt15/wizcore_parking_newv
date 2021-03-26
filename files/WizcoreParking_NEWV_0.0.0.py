@@ -14,7 +14,6 @@ driver.implicitly_wait(time_to_wait=5)
 
 # url loading
 driver.get(url)
-driver.implicitly_wait(time_to_wait=5)
 
 # login
 driver.find_element_by_id("inputAccount").send_keys(wiz_id)
