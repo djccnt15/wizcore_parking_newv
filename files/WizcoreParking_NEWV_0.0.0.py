@@ -19,7 +19,6 @@ driver.get(url)
 driver.find_element_by_id("inputAccount").send_keys(wiz_id)
 driver.find_element_by_id("inputPassword").send_keys(wiz_pw)
 driver.find_element_by_class_name("btn.btn-lg.btn-primary.btn-block.btn-signin").click()
-driver.implicitly_wait(time_to_wait=5)
 
 # search car
 search_box_car = driver.find_element_by_id("ip_car")
