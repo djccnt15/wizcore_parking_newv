@@ -6,7 +6,7 @@ driver_loca = ".\chromedriver.exe"
 url = "http://220.75.173.245/"
 wiz_id = "A101101"
 wiz_pw = "Wizcore!0"
-car_num = "test_car_num"
+car_num = "87로6770"
 
 # loading chrome web driver
 driver = webdriver.Chrome(driver_loca)
@@ -38,6 +38,7 @@ driver.find_element_by_id("DC_Active").click()
 # quit driver
 # driver.quit()
 
+# dummy code
 # table_search_result = driver.find_element_by_id("carsearch_table")
 # tbody = table_search_result.find_element_by_tag_name("tbody")
 # rows = tbody.find_elements_by_tag_name("tr")
