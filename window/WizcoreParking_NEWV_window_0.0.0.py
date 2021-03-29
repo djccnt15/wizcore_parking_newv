@@ -47,7 +47,7 @@ def job():
 # schedule
 schedule.every().friday.at("06:30").do(job)
 
-# run every 10 seconds
+# run every friday at 0630
 while True:
     schedule.run_pending()
     time.sleep(1)
