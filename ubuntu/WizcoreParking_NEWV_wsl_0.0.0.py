@@ -11,13 +11,14 @@ wiz_id = "****"
 wiz_pw = "****"
 car_num = "****"
 
-def job():
-    # url connection check
-    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    http = urllib3.PoolManager()
-    response = http.request('GET', url)
-    print("%s: current http status code is %s" %(current_time, response.status))
+# url connection check
+current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+http = urllib3.PoolManager()
+response = http.request('GET', url)
+print("%s: code starts running" %(current_time))
+print("%s: current http status code is %s" %(current_time, response.status), flush=True)
 
+def job():
     # loading chrome webdriver
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     try:
