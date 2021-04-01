@@ -1,15 +1,14 @@
-import os, sys,time
+import os, sys, time, schedule
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import schedule
+
+# declaring var
+url = "http://220.75.173.245/"
+wiz_id = "****"
+wiz_pw = "****"
+car_num = "****"
 
 def job():
-    # declaring var
-    url = "http://220.75.173.245/"
-    wiz_id = "****"
-    wiz_pw = "****"
-    car_num = "****"
-
     # loading chrome web driver
     if getattr(sys, 'frozen', False):
         chromedriver_path = os.path.join(sys._MEIPASS, "chromedriver.exe")
