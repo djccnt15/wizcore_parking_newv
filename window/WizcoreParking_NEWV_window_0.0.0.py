@@ -6,9 +6,9 @@ import schedule
 def job():
     # declaring var
     url = "http://220.75.173.245/"
-    wiz_id = "A101101"
-    wiz_pw = "Wizcore!0"
-    car_num = "87로6770"
+    wiz_id = "****"
+    wiz_pw = "****"
+    car_num = "****"
 
     # loading chrome web driver
     if getattr(sys, 'frozen', False):
