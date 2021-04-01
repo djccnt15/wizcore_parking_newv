@@ -1,4 +1,4 @@
-import os, sys, time, schedule
+import os, sys, time, schedule, urllib3
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -7,16 +7,26 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # declaring var
 url = "http://220.75.173.245/"
-wiz_id = "A101101"
-wiz_pw = "Wizcore!0"
-car_num = "87로6770"
+wiz_id = "****"
+wiz_pw = "****"
+car_num = "****"
 
 def job():
-    # loading chrome web driver
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path='chromedriver', options=options)
-    driver.implicitly_wait(time_to_wait=5)
+    # url connection check
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    http = urllib3.PoolManager()
+    response = http.request('GET', url)
+    print("%s: current http status code is %s" %(current_time, response.status))
+
+    # loading chrome webdriver
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    try:
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        driver = webdriver.Chrome(executable_path='chromedriver', options=options)
+        driver.implicitly_wait(time_to_wait=5)
+    except: print("%s: loading webdriver error" %(current_time), flush=True)
+    else: print("%s: loading webdriver success" %(current_time), flush=True)
 
     # url loading
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
