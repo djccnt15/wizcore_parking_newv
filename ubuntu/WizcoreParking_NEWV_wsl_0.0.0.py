@@ -5,8 +5,9 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-print("%s: code starts running" %(current_time), flush=True)
+start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+print("%s: code starts running" %(start_time), flush=True)
+del start_time
 
 # declaring var
 url = "http://220.75.173.245/"
