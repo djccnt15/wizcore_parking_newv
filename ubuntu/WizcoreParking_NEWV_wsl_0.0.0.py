@@ -15,7 +15,7 @@ car_num = "****"
 current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 http = urllib3.PoolManager()
 response = http.request('GET', url)
-print("%s: code starts running" %(current_time))
+print("%s: code starts running" %(current_time), flush=True)
 print("%s: current http status code is %s" %(current_time, response.status), flush=True)
 
 def job():
@@ -49,8 +49,7 @@ def job():
     search_box_car = driver.find_element_by_id("ip_car")
     search_box_car.send_keys(car_num)
     search_box_car.send_keys(Keys.RETURN)
-    wait = WebDriverWait(driver, 1)
-    try: alert = wait.until(EC.alert_is_present())
+    try: alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except: print("%s: search car success" %(current_time), flush=True)
     else:
         print("%s error message: %s" %(current_time, alert.text), flush=True)
@@ -69,6 +68,7 @@ def job():
     try:
         driver.find_element_by_xpath('//*[@id="dc_items"]/label[3]/input').click()
         driver.find_element_by_id("DC_Active").click()
+        time.sleep(2) # wait parking system works
         driver.find_element_by_xpath('//*[@id="dc_items"]/label[2]/input').click()
         driver.find_element_by_id("DC_Active").click()
     except: print("%s: discount error" %(current_time), flush=True)
