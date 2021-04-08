@@ -11,9 +11,9 @@ del start_time
 
 # declaring var
 url = "http://220.75.173.245/"
-wiz_id = "****"
-wiz_pw = "****"
-car_num = "****"
+wiz_id = "**"
+wiz_pw = "**"
+car_num = "87로6770"
 
 def loading_webdriver():
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -34,7 +34,7 @@ def search_car():
     try: alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except: print("%s: search car success" %(current_time), flush=True)
     else:
-        print("%s error message: %s" %(current_time, alert.text), flush=True)
+        print("%s: search car error, %s" %(current_time, alert.text), flush=True)
         alert.dismiss()
 
 def select_car():
@@ -50,11 +50,15 @@ def discount(discount_type):
     try:
         driver.find_element_by_xpath('//*[@id="dc_items"]/label[%s]/input' %(discount_type)).click()
         driver.find_element_by_id("DC_Active").click()
-    except: print("%s: discount error" %(current_time), flush=True)
-    else:
+        alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
+    except:
         if discount_type == 3: print("%s: 1 hour discount success" %(current_time), flush=True)
         elif discount_type == 2: print("%s: 30 minute discount success" %(current_time), flush=True)
         elif discount_type == 1: print("%s: 10 minute discount success" %(current_time), flush=True)
+    else:
+        print("%s: discount error, %s" %(current_time, alert.text), flush=True)
+        alert.dismiss()
+
 
 def job():
     # loading webdriver
@@ -65,48 +69,44 @@ def job():
     http = urllib3.PoolManager()
     response = http.request('GET', url)
 
-    if response.status == 200:
-        print("%s: current http status code is %s, connection OK" %(current_time, response.status), flush=True)
+    # url loading
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    try: driver.get(url)
+    except: print("%s: get url error" %(current_time), flush=True)
+    else: print("%s: get url success, current url is %s" %(current_time, driver.current_url), flush=True)
 
-        # url loading
-        current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        try: driver.get(url)
-        except: print("%s: get url error" %(current_time), flush=True)
-        else: print("%s: get url success, current url is %s" %(current_time, driver.current_url), flush=True)
+    # login
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    try:
+        driver.find_element_by_id("inputAccount").send_keys(wiz_id)
+        driver.find_element_by_id("inputPassword").send_keys(wiz_pw)
+        driver.find_element_by_class_name("btn.btn-lg.btn-primary.btn-block.btn-signin").click()
+    except: print("%s: login error" %(current_time), flush=True)
+    else: print("%s: login success, current url is %s" %(current_time, driver.current_url), flush=True)
 
-        # login
-        current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        try:
-            driver.find_element_by_id("inputAccount").send_keys(wiz_id)
-            driver.find_element_by_id("inputPassword").send_keys(wiz_pw)
-            driver.find_element_by_class_name("btn.btn-lg.btn-primary.btn-block.btn-signin").click()
-        except: print("%s: login error" %(current_time), flush=True)
-        else: print("%s: login success, current url is %s" %(current_time, driver.current_url), flush=True)
+    # search car and select car
+    search_car()
+    select_car()
 
-        # search car and select car
-        search_car()
-        select_car()
+    # discount parking 1h
+    discount(3)
 
-        # discount parking 1h
-        discount(3)
+    # refresh
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    driver.refresh()
+    print("%s: refresh page" %(current_time), flush=True)
 
-        # refresh
-        current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        driver.refresh()
-        print("%s: refresh page" %(current_time), flush=True)
+    # search car and select car
+    search_car()
+    select_car()
 
-        # search car and select car
-        search_car()
-        select_car()
+    # discount parking 30m
+    discount(2)
 
-        # discount parking 30m
-        discount(2)
-
-        # quit web driver
-        driver.quit()
-        current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        print("%s: web driver quit" %(current_time), flush=True)
-    else: print("%s: current http status code is %s, http has a problem" %(current_time, response.status), flush=True)
+    # quit web driver
+    driver.quit()
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    print("%s: web driver quit" %(current_time), flush=True)
 
 # schedule
 schedule.every().friday.at("06:30").do(job)
