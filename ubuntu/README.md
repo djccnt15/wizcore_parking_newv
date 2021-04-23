@@ -15,9 +15,9 @@ check chrome version
 
 ### install chromedriver
 get chromedriver file link here https://chromedriver.chromium.org/ and change the file link below
-the version of ur chromedriver must match with ur chrome version
+the version of ur chromedriver must match with ur chrome version(e.g. Chrome version 90)
 
-    $ wget https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip
+    $ wget *file_link
     $ unzip chromedriver_linux64.zip
     $ sudo mv chromedriver /usr/bin/chromedriver
     $ sudo chown root:root /usr/bin/chromedriver
