@@ -14,9 +14,9 @@ check Chrome version
     $ google-chrome --version
 
 ### install ChromeDriver
-get ChromeDriver file link here(https://sites.google.com/chromium.org/driver/) and change the file link below
-the version of ur ChromeDriver must match with ur Chrome version(e.g. Chrome version 90 and ChromeDriver 90)
-and ChromeDriver should be a zip file.
+get ChromeDriver file link here(https://sites.google.com/chromium.org/driver/) and change the file link below    
+the version of ur ChromeDriver must match with ur Chrome version(e.g. Chrome version 90 and ChromeDriver 90)    
+and ChromeDriver should be a zip file.    
 in my case, it was like this
 
     $ wget https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_linux64.zip
