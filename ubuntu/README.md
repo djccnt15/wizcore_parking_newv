@@ -23,7 +23,7 @@ in my case, it was like this
 
 download, unzip, and put it in ur bin dir
 
-    $ wget *file_link
+    $ wget {file_link}
     $ unzip chromedriver_linux64.zip
     $ sudo mv chromedriver /usr/bin/chromedriver
     $ sudo chown root:root /usr/bin/chromedriver
