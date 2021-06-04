@@ -15,16 +15,13 @@ wiz_id = "**"
 wiz_pw = "**"
 car_num = "87로6770"
 
-def loading_webdriver():
-    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    try:
-        options = webdriver.ChromeOptions()
-        # options.add_argument('--headless')
-        global driver
-        driver = webdriver.Chrome(executable_path='chromedriver', options=options)
-        driver.implicitly_wait(time_to_wait=5)
-    except: print("%s: loading webdriver error" %(current_time), flush=True)
-    else: print("%s: loading webdriver success" %(current_time), flush=True)
+'''load chromedriver'''
+options = webdriver.ChromeOptions()
+# options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+driver = webdriver.Chrome(executable_path='chromedriver', options=options)
+driver.implicitly_wait(time_to_wait=5)
 
 def search_car():
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -61,9 +58,6 @@ def discount(discount_type):
 
 
 def job():
-    # loading webdriver
-    loading_webdriver()
-
     # url loading
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     try: driver.get(url)
