@@ -20,6 +20,8 @@ def loading_webdriver():
     try:
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         global driver
         driver = webdriver.Chrome(executable_path='chromedriver', options=options)
         driver.implicitly_wait(time_to_wait=5)
@@ -63,11 +65,6 @@ def discount(discount_type):
 def job():
     # loading webdriver
     loading_webdriver()
-
-    # url connection check
-    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    http = urllib3.PoolManager()
-    response = http.request('GET', url)
 
     # url loading
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
