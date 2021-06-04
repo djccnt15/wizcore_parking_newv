@@ -7,3 +7,4 @@ code for automating parking discount of Wizcore at NEWV
 * https://greeksharifa.github.io/references/2020/10/30/python-selenium-usage/
 * https://gracefulprograming.tistory.com/128
 * https://www.gregbrisebois.com/posts/chromedriver-in-wsl2/
+* https://peter.sh/experiments/chromium-command-line-switches/
