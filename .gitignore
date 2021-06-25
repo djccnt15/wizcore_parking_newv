@@ -1,0 +1,10 @@
+# folders
+lib/
+Scripts/
+include/
+
+# files
+test.py
+auth.json
+chromedriver
+chromedriver.exe

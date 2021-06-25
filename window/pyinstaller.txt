@@ -1,2 +1,0 @@
-pyi-makespec WizcoreParking_NEWV_0.0.0.py --onefile --add-binary "chromedriver.exe";"."
-pyinstaller --clean --onefile WizcoreParking_NEWV_0.0.0.py
