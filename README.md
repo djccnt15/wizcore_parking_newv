@@ -1,14 +1,14 @@
-### WizcoreParking_NEWV
+## WizcoreParking_NEWV
 code for automated and scheduled parking discount of Wizcore at NEWV
 
-### windows
-#### guide
+## windows
+### guide
 1. get chrome
-2. get chromedriver by ur chrome version
+2. get chromedriver of ur chrome version
 3. run code
 
-### linux
-#### install Chrome
+## linux
+### install Chrome
 prep apt
 apt update
 
@@ -31,7 +31,7 @@ check Chrome version
 
     google-chrome --version
 
-#### install ChromeDriver
+### install ChromeDriver
 get ChromeDriver file link here(https://sites.google.com/chromium.org/driver/) and change the file link below
 the version of ur ChromeDriver must match with ur Chrome version(e.g. Chrome version 90 and ChromeDriver 90)
 and ChromeDriver should be a zip file.
@@ -63,7 +63,7 @@ check chromedriver version
 
     chromedriver --version
 
-### Reference
+## Reference
 * https://www.selenium.dev/documentation/en/
 * https://www.selenium.dev/selenium/docs/api/py/index.html
 * https://greeksharifa.github.io/references/2020/10/30/python-selenium-usage/
