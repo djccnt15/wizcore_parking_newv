@@ -22,6 +22,15 @@ def loading_webdriver(driver_path: Path | str, headless: int):
     return driver
 
 
+def login(driver: WebDriver, auth: dict):
+    driver.find_element_by_id("inputAccount").send_keys(auth["id"])
+    driver.find_element_by_id("inputPassword").send_keys(auth["pw"])
+    driver.find_element_by_class_name(
+        "btn.btn-lg.btn-primary.btn-block.btn-signin"
+    ).click()
+    return driver
+
+
 def search_car(driver: WebDriver, car_num):
     search_box_car = driver.find_element_by_id("ip_car")
     search_box_car.send_keys(car_num)
@@ -58,15 +67,13 @@ def discount(driver: WebDriver, discount_type: int):
     return driver
 
 
-def main(headless: int):
+def main(headless: int, info_path: Path):
     start_time = datetime.now().replace(microsecond=0)
     print("%s: code starts running" % (start_time))
 
     # declaring var
-    url = "http://220.75.173.245/"
-
-    with open("auth.json", encoding="utf-8") as input_json:
-        auth = json.load(input_json)
+    with open(info_path, encoding="utf-8") as f:
+        info: dict = json.load(f)
 
     driver_path = "chromedriver"
     if platform.system() == "Windows":
@@ -85,7 +92,7 @@ def main(headless: int):
     # url loading
     current_time = datetime.now().replace(microsecond=0)
     try:
-        driver.get(url)
+        driver.get(info["url"])
     except Exception:
         print("%s: get url error" % (current_time))
         raise Exception
@@ -99,11 +106,7 @@ def main(headless: int):
     # login
     current_time = datetime.now().replace(microsecond=0)
     try:
-        driver.find_element_by_id("inputAccount").send_keys(auth["wiz_id"])
-        driver.find_element_by_id("inputPassword").send_keys(auth["wiz_pw"])
-        driver.find_element_by_class_name(
-            "btn.btn-lg.btn-primary.btn-block.btn-signin"
-        ).click()
+        driver = login(driver=driver, auth=info)
     except Exception:
         print("%s: login error" % (current_time))
         raise Exception
@@ -115,7 +118,7 @@ def main(headless: int):
 
     # search car
     current_time = datetime.now().replace(microsecond=0)
-    driver = search_car(driver=driver, car_num=auth["car_num"])
+    driver = search_car(driver=driver, car_num=info["car_num"])
     try:
         alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except Exception:
@@ -128,7 +131,7 @@ def main(headless: int):
     # select car
     current_time = datetime.now().replace(microsecond=0)
     try:
-        select_car(driver=driver, car_num=auth["car_num"])
+        select_car(driver=driver, car_num=info["car_num"])
     except Exception:
         print("%s: selecting car error" % (current_time))
         raise Exception
@@ -145,7 +148,7 @@ def main(headless: int):
 
     # search car
     current_time = datetime.now().replace(microsecond=0)
-    driver = search_car(driver=driver, car_num=auth["car_num"])
+    driver = search_car(driver=driver, car_num=info["car_num"])
     try:
         alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except Exception:
@@ -157,7 +160,7 @@ def main(headless: int):
     # select car
     current_time = datetime.now().replace(microsecond=0)
     try:
-        select_car(driver=driver, car_num=auth["car_num"])
+        select_car(driver=driver, car_num=info["car_num"])
     except Exception:
         print("%s: selecting car error" % (current_time))
     else:
@@ -175,6 +178,7 @@ def main(headless: int):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--headless", type=int)
+    parser.add_argument("--info_path", type=Path, default="info.json")
     args = vars(parser)
 
     main(**args)
