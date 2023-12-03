@@ -161,6 +161,6 @@ cython_debug/
 
 # files
 note.py
-auth.json
+info.json
 chromedriver
 chromedriver.exe
