@@ -1,7 +1,6 @@
 import json
 import platform
 from argparse import ArgumentParser
-from datetime import datetime
 from pathlib import Path
 
 from selenium import webdriver
@@ -9,6 +8,17 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+from src.common.enum import (
+    DiscountResult,
+    LoginState,
+    LogMsg,
+    SearchCarState,
+    SelectCarState,
+    UrlState,
+    WebDriverState,
+)
+from src.utils.log import logger
 
 
 def loading_webdriver(driver_path: Path | str, headless: int):
@@ -47,7 +57,6 @@ def select_car(driver: WebDriver, car_num: str):
 
 def discount(driver: WebDriver, discount_type: int):
     """discount type: 1 == 10min, 2 == 30min, 3 == 1hour"""
-    current_time = datetime.now().replace(microsecond=0)
     try:
         driver.find_element_by_xpath(
             '//*[@id="dc_items"]/label[%s]/input' % (discount_type)
@@ -56,20 +65,29 @@ def discount(driver: WebDriver, discount_type: int):
         alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except Exception:
         if discount_type == 3:
-            print("%s: 1 hour discount success" % (current_time))
+            logger.info(DiscountResult.SUCCESS % "1h")
         elif discount_type == 2:
-            print("%s: 30 minute discount success" % (current_time))
+            logger.info(DiscountResult.SUCCESS % "30m")
         elif discount_type == 1:
-            print("%s: 10 minute discount success" % (current_time))
+            logger.info(DiscountResult.SUCCESS % "10m")
     else:
-        print("%s: discount error, %s" % (current_time, alert.text))
-        alert.dismiss()
+        try:
+            raise Exception
+        except Exception as e:
+            ERROR_MSG = f"{e}\n{alert.text}"
+            logger.exception(DiscountResult.ERROR % ERROR_MSG)
     return driver
 
 
-def main(headless: int, info_path: Path):
-    start_time = datetime.now().replace(microsecond=0)
-    print("%s: code starts running" % (start_time))
+def main(headless: int, log_level: int, info_path: Path):
+    log_level_list = [0, 10, 20, 30, 40, 50]
+    if log_level not in log_level_list:
+        ERROR_MSG = LogMsg.LOG_LEVEL % log_level_list
+        logger.critical(ERROR_MSG)
+        raise AssertionError(ERROR_MSG)
+    logger.setLevel(log_level)
+
+    logger.info(LogMsg.START)
 
     # declaring var
     with open(info_path, encoding="utf-8") as f:
@@ -77,108 +95,88 @@ def main(headless: int, info_path: Path):
 
     driver_path = "chromedriver"
     if platform.system() == "Windows":
-        driver_path = "chromedriver.exe"
+        driver_path = f"{driver_path}.exe"
 
     # loading webdriver
-    current_time = datetime.now().replace(microsecond=0)
     try:
         driver = loading_webdriver(driver_path=driver_path, headless=headless)
-    except Exception:
-        print("%s: loading webdriver error" % (current_time))
+    except Exception as e:
+        ERROR_MSG = f"{WebDriverState.ERROR}\n{e}"
+        logger.exception(ERROR_MSG)
         raise Exception
-    else:
-        print("%s: loading webdriver success" % (current_time))
+    logger.info(WebDriverState.SUCCESS)
 
     # url loading
-    current_time = datetime.now().replace(microsecond=0)
     try:
         driver.get(info["url"])
     except Exception:
-        print("%s: get url error" % (current_time))
+        logger.error(UrlState.ERROR)
         raise Exception
-    else:
-        print(
-            "%s: get url success, current url is %s"
-            % (current_time, driver.current_url),
-            flush=True,
-        )
+    logger.info(UrlState.SUCCESS % driver.current_url)
 
     # login
-    current_time = datetime.now().replace(microsecond=0)
     try:
         driver = login(driver=driver, auth=info)
     except Exception:
-        print("%s: login error" % (current_time))
+        logger.error(LoginState.ERROR)
         raise Exception
-    else:
-        print(
-            "%s: login success, current url is %s" % (current_time, driver.current_url),
-            flush=True,
-        )
+    logger.info(LoginState.SUCCESS % driver.current_url)
 
     # search car
-    current_time = datetime.now().replace(microsecond=0)
-    driver = search_car(driver=driver, car_num=info["car_num"])
     try:
+        driver = search_car(driver=driver, car_num=info["car_num"])
         alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except Exception:
-        print("%s: search car success" % (current_time))
-        raise Exception
+        logger.info(SearchCarState.SUCCESS)
     else:
-        print("%s: search car error, %s" % (current_time, alert.text))
-        alert.dismiss()
+        logger.error(SearchCarState.ERROR % alert.text)
+        raise Exception
 
     # select car
-    current_time = datetime.now().replace(microsecond=0)
     try:
-        select_car(driver=driver, car_num=info["car_num"])
+        driver = select_car(driver=driver, car_num=info["car_num"])
     except Exception:
-        print("%s: selecting car error" % (current_time))
+        logger.error(SelectCarState.ERROR)
         raise Exception
-    else:
-        print("%s: selecting car success" % (current_time))
+    logger.info(SelectCarState.SUCCESS)
 
     # discount parking 1h
     driver = discount(driver=driver, discount_type=3)
 
     # refresh
-    current_time = datetime.now().replace(microsecond=0)
     driver.refresh()
-    print("%s: refresh page" % (current_time))
+    logger.debug(LogMsg.REFRESH)
 
     # search car
-    current_time = datetime.now().replace(microsecond=0)
-    driver = search_car(driver=driver, car_num=info["car_num"])
     try:
+        driver = search_car(driver=driver, car_num=info["car_num"])
         alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except Exception:
-        print("%s: search car success" % (current_time))
+        logger.info(SearchCarState.SUCCESS)
     else:
-        print("%s: search car error, %s" % (current_time, alert.text))
-        alert.dismiss()
+        logger.error(SearchCarState.ERROR % alert.text)
+        raise Exception
 
     # select car
-    current_time = datetime.now().replace(microsecond=0)
     try:
-        select_car(driver=driver, car_num=info["car_num"])
+        driver = select_car(driver=driver, car_num=info["car_num"])
     except Exception:
-        print("%s: selecting car error" % (current_time))
-    else:
-        print("%s: selecting car success" % (current_time))
+        logger.error(SelectCarState.ERROR)
+    logger.info(SelectCarState.SUCCESS)
 
     # discount parking 30m
     driver = discount(driver=driver, discount_type=2)
 
     # quit web driver
     driver.quit()
-    current_time = datetime.now().replace(microsecond=0)
-    print("%s: web driver quit" % (current_time))
+    logger.info(LogMsg.QUIT)
 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--headless", type=int)
+    parser.add_argument("--headless", type=int, default=1)
+    parser.add_argument("--log_level", type=int, default=20)
     parser.add_argument("--info_path", type=Path, default="info.json")
-    args = vars(parser)
+    args = vars(parser.parse_args())
 
     main(**args)
