@@ -108,7 +108,7 @@ def main(headless: int, log_level: int, info_path: Path):
 
     # login
     try:
-        driver = login(driver=driver, auth=info)
+        driver = login(driver=driver, auth=info["auth"])
     except Exception:
         logger.error(state.LoginState.ERROR)
         raise Exception

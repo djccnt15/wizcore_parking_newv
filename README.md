@@ -7,6 +7,29 @@ code for automated and scheduled parking discount of Wizcore at NEWV
 2. get chromedriver of ur chrome version
 3. run code
 
+### sys args
+
+- `--headless`
+    - int, default value is 1
+    - whether to hide window of browser or not
+- `--log_level`
+    - int, default value is 20
+    - set log level for python
+    - you can choice between [0, 10, 20, 30, 40, 50], check the [Python official manual for Logging Level](https://docs.python.org/3/library/logging.html#logging-levels)
+- `--info_path`
+    - path to JSON file for system usage information, not recommend to input or change
+
+```json
+{
+    "auth": {
+        "id": "asdf",
+        "pw": "asdf"
+    },
+    "url": "http://220.75.173.245/",
+    "car_num": "123하1234"
+}
+```
+
 ## linux
 ### install Chrome
 prep apt

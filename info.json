@@ -1,6 +1,8 @@
 {
-    "id": "asdf",
-    "pw": "asdf",
+    "auth": {
+        "id": "asdf",
+        "pw": "asdf"
+    },
     "url": "http://220.75.173.245/",
     "car_num": "123하1234"
 }
