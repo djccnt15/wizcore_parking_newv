@@ -9,15 +9,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from src.common.enum import (
-    DiscountResult,
-    LoginState,
-    LogMsg,
-    SearchCarState,
-    SelectCarState,
-    UrlState,
-    WebDriverState,
-)
+from src.common.enums import state
 from src.utils.log import logger
 
 
@@ -65,29 +57,29 @@ def discount(driver: WebDriver, discount_type: int):
         alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except Exception:
         if discount_type == 3:
-            logger.info(DiscountResult.SUCCESS % "1h")
+            logger.info(state.DiscountResult.SUCCESS % "1h")
         elif discount_type == 2:
-            logger.info(DiscountResult.SUCCESS % "30m")
+            logger.info(state.DiscountResult.SUCCESS % "30m")
         elif discount_type == 1:
-            logger.info(DiscountResult.SUCCESS % "10m")
+            logger.info(state.DiscountResult.SUCCESS % "10m")
     else:
         try:
             raise Exception
         except Exception as e:
             ERROR_MSG = f"{e}\n{alert.text}"
-            logger.exception(DiscountResult.ERROR % ERROR_MSG)
+            logger.exception(state.DiscountResult.ERROR % ERROR_MSG)
     return driver
 
 
 def main(headless: int, log_level: int, info_path: Path):
     log_level_list = [0, 10, 20, 30, 40, 50]
     if log_level not in log_level_list:
-        ERROR_MSG = LogMsg.LOG_LEVEL % log_level_list
+        ERROR_MSG = state.LogMsg.LOG_LEVEL % log_level_list
         logger.critical(ERROR_MSG)
         raise AssertionError(ERROR_MSG)
     logger.setLevel(log_level)
 
-    logger.info(LogMsg.START)
+    logger.info(state.LogMsg.START)
 
     # declaring var
     with open(info_path, encoding="utf-8") as f:
@@ -101,75 +93,75 @@ def main(headless: int, log_level: int, info_path: Path):
     try:
         driver = loading_webdriver(driver_path=driver_path, headless=headless)
     except Exception as e:
-        ERROR_MSG = f"{WebDriverState.ERROR}\n{e}"
+        ERROR_MSG = f"{state.WebDriverState.ERROR}\n{e}"
         logger.exception(ERROR_MSG)
         raise Exception
-    logger.info(WebDriverState.SUCCESS)
+    logger.info(state.WebDriverState.SUCCESS)
 
     # url loading
     try:
         driver.get(info["url"])
     except Exception:
-        logger.error(UrlState.ERROR)
+        logger.error(state.UrlState.ERROR)
         raise Exception
-    logger.info(UrlState.SUCCESS % driver.current_url)
+    logger.info(state.UrlState.SUCCESS % driver.current_url)
 
     # login
     try:
         driver = login(driver=driver, auth=info)
     except Exception:
-        logger.error(LoginState.ERROR)
+        logger.error(state.LoginState.ERROR)
         raise Exception
-    logger.info(LoginState.SUCCESS % driver.current_url)
+    logger.info(state.LoginState.SUCCESS % driver.current_url)
 
     # search car
     try:
         driver = search_car(driver=driver, car_num=info["car_num"])
         alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except Exception:
-        logger.info(SearchCarState.SUCCESS)
+        logger.info(state.SearchCarState.SUCCESS)
     else:
-        logger.error(SearchCarState.ERROR % alert.text)
+        logger.error(state.SearchCarState.ERROR % alert.text)
         raise Exception
 
     # select car
     try:
         driver = select_car(driver=driver, car_num=info["car_num"])
     except Exception:
-        logger.error(SelectCarState.ERROR)
+        logger.error(state.SelectCarState.ERROR)
         raise Exception
-    logger.info(SelectCarState.SUCCESS)
+    logger.info(state.SelectCarState.SUCCESS)
 
     # discount parking 1h
     driver = discount(driver=driver, discount_type=3)
 
     # refresh
     driver.refresh()
-    logger.debug(LogMsg.REFRESH)
+    logger.debug(state.LogMsg.REFRESH)
 
     # search car
     try:
         driver = search_car(driver=driver, car_num=info["car_num"])
         alert = WebDriverWait(driver, timeout=2).until(EC.alert_is_present())
     except Exception:
-        logger.info(SearchCarState.SUCCESS)
+        logger.info(state.SearchCarState.SUCCESS)
     else:
-        logger.error(SearchCarState.ERROR % alert.text)
+        logger.error(state.SearchCarState.ERROR % alert.text)
         raise Exception
 
     # select car
     try:
         driver = select_car(driver=driver, car_num=info["car_num"])
     except Exception:
-        logger.error(SelectCarState.ERROR)
-    logger.info(SelectCarState.SUCCESS)
+        logger.error(state.SelectCarState.ERROR)
+    logger.info(state.SelectCarState.SUCCESS)
 
     # discount parking 30m
     driver = discount(driver=driver, discount_type=2)
 
     # quit web driver
     driver.quit()
-    logger.info(LogMsg.QUIT)
+    logger.info(state.LogMsg.QUIT)
 
 
 if __name__ == "__main__":
