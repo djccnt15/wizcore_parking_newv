@@ -10,7 +10,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from src.common.enums import state
+from src.common.enums import discount, state
 from src.common.error import LoginError
 from src.utils.log import logger
 
@@ -57,25 +57,11 @@ def select_car(driver: WebDriver, car_num: str):
     return driver
 
 
-def discount(driver: WebDriver, discount_type: int):
-    """discount type: 1 == 10min, 2 == 30min, 3 == 1hour"""
-    try:
-        driver.find_element(
-            by=By.XPATH, value=f'//*[@id="dc_items"]/label[{discount_type}]/input'
-        ).click()
-        driver.find_element(by=By.ID, value="DC_Active").click()
-    except NoSuchElementException as e:
-        ERROR_MSG = f"{state.DiscountResult.ERROR}\n{e}"
-        logger.exception(ERROR_MSG)
-        raise NoSuchElementException
-
-    if discount_type == 3:
-        logger.info(state.DiscountResult.SUCCESS % "1h")
-    elif discount_type == 2:
-        logger.info(state.DiscountResult.SUCCESS % "30m")
-    elif discount_type == 1:
-        logger.info(state.DiscountResult.SUCCESS % "10m")
-
+def grant_discount(driver: WebDriver, dc_type: discount.DiscountType):
+    driver.find_element(
+        by=By.XPATH, value=f'//*[@id="dc_items"]/label[{dc_type.value[0]}]/input'
+    ).click()
+    driver.find_element(by=By.ID, value="DC_Active").click()
     return driver
 
 
@@ -139,7 +125,14 @@ def main(headless: int, log_level: int, info_path: Path):
     logger.info(state.SelectCarState.SUCCESS)
 
     # discount parking 1h
-    driver = discount(driver=driver, discount_type=3)
+    dc_type = discount.DiscountType.H1
+    try:
+        driver = grant_discount(driver=driver, dc_type=dc_type)
+    except NoSuchElementException as e:
+        ERROR_MSG = f"{state.DiscountResult.ERROR}\n{e}"
+        logger.exception(ERROR_MSG)
+        raise Exception
+    logger.info(state.DiscountResult.SUCCESS % dc_type.value[1])
 
     # refresh
     driver.refresh()
@@ -163,7 +156,14 @@ def main(headless: int, log_level: int, info_path: Path):
     logger.info(state.SelectCarState.SUCCESS)
 
     # discount parking 30m
-    driver = discount(driver=driver, discount_type=2)
+    dc_type = discount.DiscountType.M30
+    try:
+        driver = grant_discount(driver=driver, dc_type=dc_type)
+    except NoSuchElementException as e:
+        ERROR_MSG = f"{state.DiscountResult.ERROR}\n{e}"
+        logger.exception(ERROR_MSG)
+        raise Exception
+    logger.info(state.DiscountResult.SUCCESS % dc_type.value[1])
 
     # quit web driver
     driver.quit()
