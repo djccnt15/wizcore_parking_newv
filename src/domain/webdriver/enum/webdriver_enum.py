@@ -1,13 +1,6 @@
 from enum import StrEnum
 
 
-class LogMsg(StrEnum):
-    START = "Program Starts"
-    REFRESH = "Refresh Page"
-    QUIT = "WebDriver Quit"
-    LOG_LEVEL = "log_level must be one of %s"
-
-
 class WebDriverState(StrEnum):
     SUCCESS = "loading webdriver success"
     ERROR = "loading webdriver error"
@@ -16,11 +9,6 @@ class WebDriverState(StrEnum):
 class UrlState(StrEnum):
     SUCCESS = "get url success - %s"
     ERROR = "get url error"
-
-
-class LoginState(StrEnum):
-    SUCCESS = "login success - %s"
-    ERROR = "login error - %s"
 
 
 class SearchCarState(StrEnum):
