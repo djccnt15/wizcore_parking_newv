@@ -1,4 +1,4 @@
-# WizcoreParking_NEWV
+# wizcore_parking_newv
 
 code for automated parking discount of Wizcore at NEWV
 
